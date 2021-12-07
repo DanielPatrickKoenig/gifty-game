@@ -8,6 +8,7 @@ export default class RigManager{
         this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
+        // console.log(object3DSelector(this.model, {type: 'Bone'}).map(item => item.name));
     }
     getBoneByName(name){
         return object3DSelector(this.model, {type: 'Bone', name})[0];

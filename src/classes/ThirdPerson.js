@@ -4,7 +4,7 @@ export default class ThirdPerson{
     constructor(player, camera){
         this.player = player;
         this.camera = camera;
-        this.angleOffset = -20;
+        this.angleOffset = 0;
         this.distanceToPlayer = 12;
     }
     reposition(){
