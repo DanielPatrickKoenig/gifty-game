@@ -21,6 +21,8 @@ import Navigator from '../classes/Navigator.js';
 import ThirdPerson from '../classes/ThirdPerson.js';
 import {degreesToRadians} from '../utils/Utilities.js';
 import PlayerControl from './PlayerControl.vue';
+import {TweenLite} from 'gsap';
+import Physics, {ShapeTypes} from '../classes/Physics.js';
 export default {
     components:{
         PlayerControl
@@ -32,6 +34,7 @@ export default {
             navigator: null,
             tp: null,
             povBase: 0,
+            physics: null
         };
     },
     methods: {
@@ -54,6 +57,18 @@ export default {
         onPovChange(e){
             this.tp.angleOffset =this.povBase + e.x;
             this.tp.reposition();
+        },
+        renderLoop(){
+            this.env.render();
+            const loopProps = {n:0};
+            TweenLite.to(loopProps, 1, {
+                n:1,
+                onUpdate:() => {
+                    this.env.render();
+                },
+                onComplete: this.renderLoop
+            });
+            
         }
     },
     async mounted(){
@@ -83,17 +98,33 @@ export default {
         this.env.scene.add( ground );
         ground.rotation.x = degreesToRadians(-90);
 
+        this.physics = new Physics({ gravity: -5, clock: new THREE.Clock() });
+        this.physics.addShape({type: ShapeTypes.PLANE, mass: 0, size: {x: 50, y: 0, z: 50}, position: { x: 0, y: 0, z: 0 }, orientation: { x: 1, y: 0, z: 0 }, mesh: ground});
+
+        const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        const cube = new THREE.Mesh( geometry, material );
+        cube.position.y = 8;
+        cube.position.x = 5;
+        this.env.scene.add( cube );
+
+        this.physics.addShape({type: ShapeTypes.BOX, mass: 1, size: {x: cube.scale.x, y: cube.scale.y, z: cube.scale.z}, position: {x: cube.position.x, y: cube.position.y, z: cube.position.z}, mesh: cube});
+
+        const geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
+        const material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        const cube2 = new THREE.Mesh( geometry2, material2 );
+        cube2.position.y = 12;
+        cube2.position.x = 5.8;
+        this.env.scene.add( cube2 );
+
+        this.physics.addShape({type: ShapeTypes.BOX, mass: 1, size: {x: cube2.scale.x, y: cube2.scale.y, z: cube2.scale.z}, position: {x: cube2.position.x, y: cube2.position.y, z: cube2.position.z}, mesh: cube2});
+
         const navigator = new Navigator(model, .1);
+        navigator.addFloor(ground);
         this.navigator = navigator;
-        // this.$refs.stage.addEventListener('click', () => {
-        //     console.log('clickd');
-        //     navigator.forward2D();
-        //     tp.reposition();
-        // });
 
         const rm = new RigManager({
-            model, 
-            renderer: this.env.renderer, 
+            model,
             camera: this.env.camera, 
             scene: this.env.scene
         });
@@ -114,16 +145,15 @@ export default {
         rm.cycle('rightArm', 'y', [{value:0, time:.5}], ['idle']);
         rm.cycle('rightArm', 'y', [{value:-20, time:.5}, {value:20, time:.5}], ['walking']);
         rm.cycle('rightArm', 'y', [{value:-90, time:.5}], ['carying', 'holding']);
-        console.log(rm);
-        // const rightLeg = this.env.selector(model, [{type: 'Bone'}, {name: 'rightLeg'}])[0];
-        // const leftLeg = this.env.selector(model, [{type: 'Bone'}, {name: 'leftLeg'}])[0];
-        // setRotation(rightLeg, 'z', -30);
-        // setRotation(leftLeg, 'z', 30);
-        // rightLeg.rotateOnAxis ( new THREE.Vector3( 0,0,1), degreesToRadians(-30) );
-        // leftLeg.rotateOnAxis ( new THREE.Vector3( 0,0,1), degreesToRadians(30) );
-        // rightLeg.rotateZ(degreesToRadians(-30));
-        // leftLeg.rotateZ(degreesToRadians(30));
-        this.env.render();
+        
+        
+        this.renderLoop();
+        setTimeout(() => {
+            this.physics.update();
+        },2000);
+        
+
+        
     }
 }
 </script>

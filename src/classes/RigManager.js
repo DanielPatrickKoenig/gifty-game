@@ -35,7 +35,9 @@ export default class RigManager{
         for(let i = 0; i < valuesAndTimes.length; i++){
             if(!states || states.includes(this.currentState)){
                 await this.rotateTo(bone, axis, valuesAndTimes[i], () => {
-                    this.renderer.render(this.scene, this.camera);
+                    if(this.renderer){
+                        this.renderer.render(this.scene, this.camera);
+                    }
                 });
             }
             else{
