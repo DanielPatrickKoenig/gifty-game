@@ -41,4 +41,7 @@ export default class Environment3d{
     createBox({size, orientation, position, mass, material, rotation}){
         return createPrimitive({ type: ShapeTypes.BOX, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
     }
+    createSphere({size, orientation, position, mass, material, rotation}){
+        return createPrimitive({ type: ShapeTypes.SPHERE, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
+    }
 }

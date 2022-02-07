@@ -37,7 +37,7 @@ class Physics{
                 break;
             }
             case ShapeTypes.SPHERE:{
-                shape = new CANNON.Sphere(sizeVector);
+                shape = new CANNON.Sphere(sizeVector.r);
                 break;
             }
         }

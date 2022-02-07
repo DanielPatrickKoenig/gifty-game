@@ -16,7 +16,7 @@ function radiansToDegrees(value){
 }
 function defaultDimensionValues () {
     return {
-        size: { x: 1, y: 1, z: 1 },
+        size: { x: 1, y: 1, z: 1, r: 1 },
         position: { x: 0, y: 0, z: 0 },
         orientation: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 }

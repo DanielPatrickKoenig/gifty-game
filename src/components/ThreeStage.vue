@@ -96,6 +96,7 @@ export default {
         this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5, y: 8, z: 0 }, mass: 1, material });
         
         this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5.8, y: 12, z: 0 }, mass: 1, material });
+        this.env.createSphere({size: {r: 1}, position: { x: 4, y: 12, z: 0 }, mass: 1, material });
         
         const navigator = new Navigator(model, .1);
         navigator.addFloor(ground);

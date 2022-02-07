@@ -59,6 +59,11 @@ function createPrimitive({ type, size, position, orientation, mass, physics, mat
         }
         case ShapeTypes.BOX:{
             geometry = new THREE.BoxGeometry( size.x, size.y, size.z );
+            break;
+        }
+        case ShapeTypes.SPHERE:{
+            geometry = new THREE.SphereGeometry( size.r );
+            break;
         }
     }
     const mesh = new THREE.Mesh( geometry, material );
