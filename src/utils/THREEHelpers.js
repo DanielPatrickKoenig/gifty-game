@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {degreesToRadians} from './Utilities.js';
+import {degreesToRadians, ShapeTypes, defaultDimensionValues} from './Utilities.js';
 const RotationAxis = {
     X: 'x',
     Y: 'y',
@@ -46,4 +46,32 @@ function object3DSelector(scope, filters) {
         return getDescendantTree(scope).filter(item => Object.keys(filters).filter(_item => item[_item] === filters[_item]).length === Object.keys(filters).length);
     }
 }
-export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector}
+function createPrimitive({ type, size, position, orientation, mass, physics, material, rotation, scene }){
+    let geometry;
+    const shapeSize = size ? size : defaultDimensionValues().size;
+    const shapePosition = position ? position : defaultDimensionValues().position;
+    const shapeOrientation = orientation ? orientation : defaultDimensionValues().orientation;
+    const shapeRotation = rotation ? rotation : defaultDimensionValues().rotation;
+    switch(type){
+        case ShapeTypes.PLANE:{
+            geometry = new THREE.PlaneGeometry( shapeSize.x, shapeSize.y );
+            break;
+        }
+        case ShapeTypes.BOX:{
+            geometry = new THREE.BoxGeometry( size.x, size.y, size.z );
+        }
+    }
+    const mesh = new THREE.Mesh( geometry, material );
+    mesh.position.x = shapePosition.x;
+    mesh.position.y = shapePosition.y;
+    mesh.position.z = shapePosition.z;
+    mesh.rotation.x = degreesToRadians(shapeRotation.x);
+    mesh.rotation.y = degreesToRadians(shapeRotation.y);
+    mesh.rotation.z = degreesToRadians(shapeRotation.z);
+    scene.add(mesh);
+    if(physics){
+        physics.addShape({type, mass, size: shapeSize, position: shapePosition, orientation: shapeOrientation, mesh});
+    }
+    return {mesh};
+}
+export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive}

@@ -22,7 +22,6 @@ import ThirdPerson from '../classes/ThirdPerson.js';
 import {degreesToRadians} from '../utils/Utilities.js';
 import PlayerControl from './PlayerControl.vue';
 import {TweenLite} from 'gsap';
-import Physics, {ShapeTypes} from '../classes/Physics.js';
 export default {
     components:{
         PlayerControl
@@ -33,8 +32,7 @@ export default {
             rm: null,
             navigator: null,
             tp: null,
-            povBase: 0,
-            physics: null
+            povBase: 0
         };
     },
     methods: {
@@ -72,11 +70,10 @@ export default {
         }
     },
     async mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700});
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5});
         this.env.cameraContainer.position.z = 12;
         this.env.cameraContainer.position.y = 10;
         this.env.camera.rotation.x = degreesToRadians(-15);
-        // this.env.camera.rotation.y = degreesToRadians(10);
 
         const directionalLight = new THREE.DirectionalLight( 0xffffff, 5 ); 
         this.env.scene.add( directionalLight );
@@ -93,32 +90,13 @@ export default {
 
         const groundTex = new THREE.TextureLoader().load( 'https://danielpatrickkoenig.github.io/spirit-of-kovak/dist/dirt_row.png' );
         const groundMat = new THREE.MeshBasicMaterial( { map: groundTex } );
-        const groundGeo = new THREE.PlaneGeometry( 50, 50 );
-        const ground = new THREE.Mesh( groundGeo, groundMat );
-        this.env.scene.add( ground );
-        ground.rotation.x = degreesToRadians(-90);
+        const ground = this.env.createPlane({size: {x: 50, y: 50, z: 0}, rotation: { x: -90, y: 0, z: 0 }, mass: 0, material: groundMat, orientation: { x: 1, y: 0, z: 0 } });
 
-        this.physics = new Physics({ gravity: -5, clock: new THREE.Clock() });
-        this.physics.addShape({type: ShapeTypes.PLANE, mass: 0, size: {x: 50, y: 0, z: 50}, position: { x: 0, y: 0, z: 0 }, orientation: { x: 1, y: 0, z: 0 }, mesh: ground});
-
-        const geometry = new THREE.BoxGeometry( 1, 1, 1 );
         const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        const cube = new THREE.Mesh( geometry, material );
-        cube.position.y = 8;
-        cube.position.x = 5;
-        this.env.scene.add( cube );
-
-        this.physics.addShape({type: ShapeTypes.BOX, mass: 1, size: {x: cube.scale.x, y: cube.scale.y, z: cube.scale.z}, position: {x: cube.position.x, y: cube.position.y, z: cube.position.z}, mesh: cube});
-
-        const geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
-        const material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        const cube2 = new THREE.Mesh( geometry2, material2 );
-        cube2.position.y = 12;
-        cube2.position.x = 5.8;
-        this.env.scene.add( cube2 );
-
-        this.physics.addShape({type: ShapeTypes.BOX, mass: 1, size: {x: cube2.scale.x, y: cube2.scale.y, z: cube2.scale.z}, position: {x: cube2.position.x, y: cube2.position.y, z: cube2.position.z}, mesh: cube2});
-
+        this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5, y: 8, z: 0 }, mass: 1, material });
+        
+        this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5.8, y: 12, z: 0 }, mass: 1, material });
+        
         const navigator = new Navigator(model, .1);
         navigator.addFloor(ground);
         this.navigator = navigator;
@@ -148,9 +126,6 @@ export default {
         
         
         this.renderLoop();
-        setTimeout(() => {
-            this.physics.update();
-        },2000);
         
 
         

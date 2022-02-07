@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { Object3D } from 'three';
-import {getRaycastIntersections, object3DSelector} from '../utils/THREEHelpers.js';
+import {ShapeTypes} from '../utils/Utilities.js';
+import {getRaycastIntersections, object3DSelector, createPrimitive} from '../utils/THREEHelpers.js';
+import Physics from '../classes/Physics.js';
 export default class Environment3d{
-    constructor(element, { width, height, background }){
+    constructor(element, { width, height, background, gravity }){
         const _width = width ? width : 1000;
         const _height = height ? height :  700;
         this.scene = new THREE.Scene();
@@ -14,7 +16,15 @@ export default class Environment3d{
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize( _width, _height );
         element.appendChild(this.renderer.domElement);
+        this.physics = null;
         console.log(this.cameraContainer);
+        if(gravity){
+            this.physics = new Physics({ gravity, clock: new THREE.Clock() });   
+            setTimeout(() => {
+                this.physics.update();
+            },10);
+        }
+        
     }
     render(){
         this.renderer.render(this.scene, this.camera);
@@ -24,5 +34,11 @@ export default class Environment3d{
     }
     selector(scope, filters) {
         return object3DSelector(scope, filters);
+    }
+    createPlane({size, orientation, position, mass, material, rotation}){
+        return createPrimitive({ type: ShapeTypes.PLANE, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
+    }
+    createBox({size, orientation, position, mass, material, rotation}){
+        return createPrimitive({ type: ShapeTypes.BOX, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
     }
 }

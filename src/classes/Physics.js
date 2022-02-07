@@ -1,9 +1,5 @@
 import CANNON from 'cannon';
-const ShapeTypes = {
-    PLANE: 'plane',
-    BOX: 'box',
-    SPHERE: 'sphere'
-}
+import {ShapeTypes, defaultDimensionValues} from '../utils/Utilities.js';
 class Physics{
     constructor({ gravity, clock, onUpdate, scale }){
         this.world = new CANNON.World();
@@ -15,13 +11,7 @@ class Physics{
         this.scale = scale ? scale : .5;
 
     }
-    defaultVectorValues () {
-        return {
-            size: { x: 1, y: 1, z: 1 },
-            position: { x: 0, y: 0, z: 0 },
-            orientation: { x: 0, y: 0, z: 0 }
-        }
-    }
+    
     processVec3({ property, values }){
         const prop = property ? property : 'position';
         let sizeScale = 1;
@@ -29,9 +19,9 @@ class Physics{
             sizeScale = this.scale;
         }
         return new CANNON.Vec3(
-            values.x ? values.x * sizeScale : this.defaultVectorValues()[prop].x * sizeScale,
-            values.y ? values.y * sizeScale : this.defaultVectorValues()[prop].y * sizeScale,
-            values.z ? values.z * sizeScale : this.defaultVectorValues()[prop].z * sizeScale
+            values.x ? values.x * sizeScale : defaultDimensionValues()[prop].x * sizeScale,
+            values.y ? values.y * sizeScale : defaultDimensionValues()[prop].y * sizeScale,
+            values.z ? values.z * sizeScale : defaultDimensionValues()[prop].z * sizeScale
         );
     }
     addShape({ type, mass, size, position, orientation, mesh }){
