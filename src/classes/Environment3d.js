@@ -17,7 +17,7 @@ export default class Environment3d{
         this.renderer.setSize( _width, _height );
         element.appendChild(this.renderer.domElement);
         this.physics = null;
-        console.log(this.cameraContainer);
+        // console.log(this.cameraContainer);
         if(gravity){
             this.physics = new Physics({ gravity, clock: new THREE.Clock() });   
             setTimeout(() => {

@@ -74,9 +74,10 @@ function createPrimitive({ type, size, position, orientation, mass, physics, mat
     mesh.rotation.y = degreesToRadians(shapeRotation.y);
     mesh.rotation.z = degreesToRadians(shapeRotation.z);
     scene.add(mesh);
+    let body;
     if(physics){
-        physics.addShape({type, mass, size: shapeSize, position: shapePosition, orientation: shapeOrientation, mesh});
+        body = physics.addShape({type, mass, size: shapeSize, position: shapePosition, orientation: shapeOrientation, mesh});
     }
-    return {mesh};
+    return {mesh, body};
 }
 export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive}

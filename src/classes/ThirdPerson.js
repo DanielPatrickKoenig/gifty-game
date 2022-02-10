@@ -10,6 +10,7 @@ export default class ThirdPerson{
     reposition(){
         this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.COS);
         this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.SIN);
+        this.camera.position.y = this.player.position.y + 6;
         this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
     }
 }

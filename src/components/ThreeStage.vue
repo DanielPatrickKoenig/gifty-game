@@ -8,6 +8,7 @@
             @stop="onMoveStop"
             @pov-change="onPovChange"
             @pov-start="onPovStart"
+            @space="onSpace"
         />
     </div>
 </template>
@@ -32,22 +33,33 @@ export default {
             rm: null,
             navigator: null,
             tp: null,
-            povBase: 0
+            povBase: 0,
         };
     },
     methods: {
         onMove(){
             this.rm.currentState = 'walking';
-            this.tp.reposition();
-            this.navigator.forward2D();
+            
+            // this.navigator.forward2D();
+            this.navigator.moveForward();
             
         },
         onDirectionChange(change){
-            this.tp.reposition();
+            
+            if(change<0){
+                this.navigator.turnLeft();
+            }
+            else if(change>0){
+                this.navigator.turnRight();
+            }
+            else{
+                this.navigator.stopTurning();
+            }
             this.navigator.turn(change);
         },
         onMoveStop(){
             this.rm.currentState = 'idle';
+            this.navigator.stopMoving();
         },
         onPovStart(){
             this.povBase = this.tp.angleOffset;
@@ -56,6 +68,9 @@ export default {
             this.tp.angleOffset =this.povBase + e.x;
             this.tp.reposition();
         },
+        onSpace(){
+            this.navigator.jump();
+        },
         renderLoop(){
             this.env.render();
             const loopProps = {n:0};
@@ -63,10 +78,16 @@ export default {
                 n:1,
                 onUpdate:() => {
                     this.env.render();
+                    const onFloor = this.env.physics && this.env.physics.onFloor(this.navigator.physicsBody);
+                    console.log(onFloor);
+                    if(this.rm.currentState === 'idle' && onFloor){
+                        this.navigator.idle();
+                    }
+                    this.navigator.syncToBody();
+                    this.tp.reposition();
                 },
                 onComplete: this.renderLoop
             });
-            
         }
     },
     async mounted(){
@@ -91,14 +112,15 @@ export default {
         const groundTex = new THREE.TextureLoader().load( 'https://danielpatrickkoenig.github.io/spirit-of-kovak/dist/dirt_row.png' );
         const groundMat = new THREE.MeshBasicMaterial( { map: groundTex } );
         const ground = this.env.createPlane({size: {x: 50, y: 50, z: 0}, rotation: { x: -90, y: 0, z: 0 }, mass: 0, material: groundMat, orientation: { x: 1, y: 0, z: 0 } });
+        this.env.physics.floors.push(ground.body);
 
         const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5, y: 8, z: 0 }, mass: 1, material });
+        this.env.createBox({size: {x: 2, y: 2, z: 2}, position: { x: 5, y: 8, z: 0 }, mass: 1, material });
         
-        this.env.createBox({size: {x: 1, y: 1, z: 1}, position: { x: 5.8, y: 12, z: 0 }, mass: 1, material });
-        this.env.createSphere({size: {r: 1}, position: { x: 4, y: 12, z: 0 }, mass: 1, material });
+        this.env.createBox({size: {x: 2, y: 2, z: 2}, position: { x: 5.8, y: 12, z: 0 }, mass: 1, material });
+        this.env.createSphere({size: {r: 1}, position: { x: -4, y: 12, z: 0 }, mass: 1, material });
         
-        const navigator = new Navigator(model, .1);
+        const navigator = new Navigator(model, .1, this.env);
         navigator.addFloor(ground);
         this.navigator = navigator;
 

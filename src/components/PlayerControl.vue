@@ -9,6 +9,8 @@
     @keyup.up="stop"
     @keydown.left="onLeftDown"
     @keydown.right="onRightDown"
+    @keyup.left="onLeftUp"
+    @keyup.right="onRightUp"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="mouseUp"
@@ -38,29 +40,39 @@ export default {
 
     methods: {
         updateDirection(direction){
-            console.log('direction');
+            // console.log('direction');
             this.$emit('direction-change', this.turnSpeed * direction);
         },
         move(reverse){
-            console.log('move');
+            // console.log('move');
             this.$emit('move', this.moveSpeed*(reverse ? -1 : 1));
         },
         stop(){
-            console.log('stop');
+            // console.log('stop');
             this.$emit('stop');
         },
         onSpace () {
             this.$emit('space');
         },
         onLeftDown () {
-            this.$emit('space');
+            // this.$emit('space');
             this.direction-=this.turnSpeed;
             this.updateDirection(-1);
         },
         onRightDown () {
-            this.$emit('space');
+            // this.$emit('space');
             this.direction+=this.turnSpeed;
             this.updateDirection(1);
+        },
+        onLeftUp () {
+            // this.$emit('space');
+            // this.direction-=this.turnSpeed;
+            this.updateDirection(0);
+        },
+        onRightUp () {
+            // this.$emit('space');
+            // this.direction+=this.turnSpeed;
+            this.updateDirection(0);
         },
         forward(){
             this.move();
@@ -76,7 +88,7 @@ export default {
         mouseMove(e){
             if(this.dragging){
                 this.$emit('pov-change', {x:this.dragStart.x-e.clientX,y:this.dragStart.y-e.clientY});
-                console.log({x:this.dragStart.x-e.clientX,y:this.dragStart.y-e.clientY});
+                // console.log({x:this.dragStart.x-e.clientX,y:this.dragStart.y-e.clientY});
             }
             
             
@@ -86,7 +98,7 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$refs.controls);
+        // console.log(this.$refs.controls);
         this.$refs.controls.focus();
     }
 }

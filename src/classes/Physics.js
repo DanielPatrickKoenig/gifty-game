@@ -9,6 +9,7 @@ class Physics{
         this.shapes = [];
         this.onUpdate = onUpdate;
         this.scale = scale ? scale : .5;
+        this.floors = [];
 
     }
     
@@ -46,7 +47,6 @@ class Physics{
         if (position) {
             const positionVector = this.processVec3({ values: position, property: 'position' });
             body.position = positionVector;
-            console.log(body.position.y);
         }
         if (orientation) {
             const orientationVector = this.processVec3({ values: orientation, property: 'orientation' });
@@ -54,6 +54,8 @@ class Physics{
         }
         this.world.addBody(body);
         this.shapes.push({ body, shape, mesh });
+        console.log(body);
+        return body;
     }
     update(){
         requestAnimationFrame(() => {this.update()});
@@ -76,6 +78,15 @@ class Physics{
             }
             
         }
+    }
+    onFloor(body){
+        // console.log(this.floors);
+        return this.floors.filter(item => this.inContact(item, body)).length;
+    }
+    inContact(body1, body2){
+        const shapeIDs = [body1, body2].map(item => item.shapes[0].id);
+        // console.log(shapeIDs);
+        return this.world.contacts.filter(item => [item.bi.shapes[0].id, item.bj.shapes[0].id].sort().join(',') === shapeIDs.sort().join(',')).length;
     }
 }
 
