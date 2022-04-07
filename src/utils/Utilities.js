@@ -22,4 +22,9 @@ function defaultDimensionValues () {
         rotation: { x: 0, y: 0, z: 0 }
     }
 }
-export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues};
+function processPointerEvent(e){
+    return e.touches && e.touches.length
+        ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        : { x: e.clientX, y: e.clientY };
+}
+export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues, processPointerEvent};

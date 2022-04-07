@@ -8,6 +8,7 @@
             @stop="onMoveStop"
             @pov-change="onPovChange"
             @pov-start="onPovStart"
+            @pov-end="onPovEnd"
             @space="onSpace"
         />
     </div>
@@ -61,8 +62,19 @@ export default {
             this.rm.currentState = 'idle';
             this.navigator.stopMoving();
         },
-        onPovStart(){
+        onPovStart(e){
             this.povBase = this.tp.angleOffset;
+            if(e.mobile){
+                this.rm.currentState = 'walking';
+                this.navigator.mobileMoving = true;
+            }
+            
+        },
+        onPovEnd(e){
+            if(e.mobile){
+                this.rm.currentState = 'idle';
+                this.navigator.mobileMoving = false;
+            }
         },
         onPovChange(e){
             this.tp.angleOffset =this.povBase + e.x;

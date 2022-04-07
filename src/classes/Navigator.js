@@ -1,6 +1,7 @@
 import jt from 'jstrig';
 import * as THREE from 'three';
 import {radiansToDegrees, degreesToRadians} from '../utils/Utilities.js';
+import { TweenLite } from 'gsap';
 const MovementDirectives = {
     NOT_MOVING: -1,
     FORWARD: 0,
@@ -25,6 +26,8 @@ export default class Navigator{
         this.currentPosition;
         this.moving = false;
         this.turnSpeed = 5;
+        this.rotationProxy = this.mover.rotation.y;
+        this.mobileMoving = false;
         this.movementStatus = {
             movement: MovementDirectives.NOT_MOVING,
             rotation: MovementDirectives.NOT_ROTATING
@@ -39,6 +42,19 @@ export default class Navigator{
                 console.log(e);
             });
         }
+        this.thread(this);
+    }
+    thread(scope){
+        const p = { n: 0 };
+        TweenLite.to(p, 1, { n: 1, onComplete: () => scope.thread(scope), onUpdate: () => scope.threadUpdate(scope) });
+    }
+    threadUpdate(){
+        this.mover.rotation.y += (this.rotationProxy - this.mover.rotation.y) / 5;
+        if(this.mobileMoving){
+            console.log('mobile moving');
+            this.moveForward();
+        }
+        
     }
     forward2D(){
         this.move2D(-1);
@@ -67,7 +83,7 @@ export default class Navigator{
     }
     turn(rotation){
         console.log(rotation);
-        this.mover.rotation.y+=degreesToRadians(this.turnSpeed * rotation);
+        this.rotationProxy+=degreesToRadians(this.turnSpeed * rotation);
     }
     jump(){
         if(this.physics && this.physics.onFloor(this.physicsBody)){

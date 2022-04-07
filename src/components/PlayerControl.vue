@@ -14,6 +14,9 @@
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="mouseUp"
+    @touchstart="mouseDown"
+    @touchmove="mouseMove"
+    @touchend="mouseUp"
     tabindex="-1"
   >
     sup
@@ -21,6 +24,7 @@
 </template>
 
 <script>
+import { processPointerEvent } from '../utils/Utilities';
 export default {
     props: {
         startDirection:{
@@ -34,7 +38,9 @@ export default {
             turnSpeed: 1,
             moveSpeed: 1,
             dragging: false,
-            dragStart: {x:0,y:0}
+            dragStart: {x:0,y:0},
+            lastPosition: null,
+            isMobile: false,
         }
     },
 
@@ -81,13 +87,32 @@ export default {
             this.move(true);
         },
         mouseDown(e){
-            this.$emit('pov-start');
-            this.dragStart={x:e.clientX,y:e.clientY};
+            const mobile = e.touches && e.touches.length;
+            this.isMobile = mobile;
+            if(mobile){
+                e.preventDefault();
+            }
+            this.$emit('pov-start', { mobile });
+            this.dragStart = processPointerEvent(e);
             this.dragging = true;
         },
         mouseMove(e){
             if(this.dragging){
-                this.$emit('pov-change', {x:this.dragStart.x-e.clientX,y:this.dragStart.y-e.clientY});
+                const lp = this.lastPosition ? this.lastPosition : this.dragStart;
+                const position = processPointerEvent(e);
+
+                if(e.touches && e.touches.length){
+                     if(position.x < lp.x){
+                        this.updateDirection(1);
+                    }
+                    else if(position.x > lp.x){
+                        this.updateDirection(-1);
+                    }
+                    this.lastPosition = position;
+                }
+                else{
+                    this.$emit('pov-change', {x:this.dragStart.x-position.x,y:this.dragStart.y-position.y});
+                }
                 // console.log({x:this.dragStart.x-e.clientX,y:this.dragStart.y-e.clientY});
             }
             
@@ -95,6 +120,11 @@ export default {
         },
         mouseUp(){
             this.dragging = false;
+            if(this.isMobile){
+                this.updateDirection(0);
+                this.lastPosition = null;
+                this.$emit('pov-end', { mobile: this.isMobile });
+            }
         }
     },
     mounted(){
