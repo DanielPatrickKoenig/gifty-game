@@ -1,7 +1,7 @@
-import PlayerController from './PlayerController';
-export default class Walker1Controller extends PlayerController{
+import CharacterController from './CharacterController';
+export default class Walker2Controller extends CharacterController{
     constructor(data){
-        super(data, 'https://danielpatrickkoenig.github.io/three-game-exparament/public/gifty.glb', {x: 0, y: 2, z: 0});
+        super(data, 'https://danielpatrickkoenig.github.io/three-game-exparament/public/gifty.glb', {x: 4, y: 2, z: 0});
     }
     modelLoaded(model){
         super.modelLoaded(model);
@@ -18,5 +18,12 @@ export default class Walker1Controller extends PlayerController{
         this.rigManager.cycle('rightArm', 'y', [{value:0, time:.5}], ['idle']);
         this.rigManager.cycle('rightArm', 'y', [{value:-20, time:.5}, {value:20, time:.5}], ['moving']);
         this.rigManager.cycle('rightArm', 'y', [{value:-90, time:.5}], ['carying', 'holding']);
+    }
+    update(){
+        super.update();
+        if(this.navigator){
+            this.move();
+        }
+        
     }
 }

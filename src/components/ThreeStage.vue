@@ -22,6 +22,7 @@ import PlayerControl from './PlayerControl.vue';
 import {TweenLite} from 'gsap';
 import BatterUpController from '../classes/controllers/BatterUpController';
 import Walker1Controller from '../classes/controllers/Walker1Controller';
+import Walker2Controller from '../classes/controllers/Walker2Controller';
 import GroundController from '../classes/controllers/GroundController';
 import {ControllerTypes} from '../classes/controllers/BaseController';
 import LightController, {LightTypes} from '../classes/controllers/LightController';
@@ -32,9 +33,6 @@ export default {
     data () {
         return {
             env: null,
-            rm: null,
-            navigator: null,
-            tp: null,
             batterUp: null,
             walker: null
         };
@@ -101,6 +99,8 @@ export default {
         this.batterUp = new BatterUpController({environment: this.env});
 
         this.walker = new Walker1Controller({environment: this.env});
+
+        this.walker2 = new Walker2Controller({environment: this.env});
         
         this.renderLoop();
         

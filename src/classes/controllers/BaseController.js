@@ -1,7 +1,8 @@
 const ControllerTypes = {
     NORMAL: 0,
     PLAYER: 1,
-    CHARACTER: 2
+    CHARACTER: 2,
+    CUSTOM_MESH: 3
 }
 export default class BaseController{
     constructor({environment}){

@@ -14,7 +14,7 @@ const MovementDirectives = {
     NOT_ROTATING: 7
 };
 export default class Navigator{
-    constructor (mover, speed, environment) {
+    constructor (mover, speed, environment, position) {
         this.mover = mover;
         this.speed = speed;
         this.walls = [];
@@ -33,7 +33,7 @@ export default class Navigator{
         };
         if(this.physics){
             const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-            const { mesh, body } = this.env.createSphere({size: {r: 1}, position: { x: 0, y: 2, z: 0 }, mass: 1, material });
+            const { mesh, body } = this.env.createSphere({size: {r: 1}, position, mass: 1, material });
             this.physicsMesh = mesh;
             this.physicsBody = body;
             this.currentPosition = {x: this.physicsBody.position.x, y: this.physicsBody.position.y, z: this.physicsBody.position.z};
