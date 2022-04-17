@@ -1,7 +1,8 @@
 const ShapeTypes = {
     PLANE: 'plane',
     BOX: 'box',
-    SPHERE: 'sphere'
+    SPHERE: 'sphere',
+    CYLINDER: 'cylinder'
 }
 function nextTick() {
     return new Promise(resolve => {

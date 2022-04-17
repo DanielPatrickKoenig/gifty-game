@@ -17,7 +17,6 @@ export default class Navigator{
     constructor (mover, speed, environment) {
         this.mover = mover;
         this.speed = speed;
-        this.floors = [];
         this.walls = [];
         this.env = environment;
         this.physics = this.env && this.env.physics;
@@ -64,7 +63,6 @@ export default class Navigator{
     }
     move2D(direction) {
         // console.log(this.mover.position.y);
-        console.log(this.floors[0]);
         const startPosX = this.mover.position.x;
         const startPosZ = this.mover.position.z;
         const xMove = jt.orbit(this.mover.position.x, this.speed * direction, radiansToDegrees(this.mover.rotation.y), jt.OrbitType.COS);
@@ -89,9 +87,6 @@ export default class Navigator{
         if(this.physics && this.physics.onFloor(this.physicsBody)){
             this.physicsBody.velocity.y = 12;
         }
-    }
-    addFloor(floor){
-        this.floors.push(floor);
     }
     idle(){
         if(this.physics){

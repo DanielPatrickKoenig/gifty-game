@@ -15,6 +15,7 @@ export default class Environment3d{
         this.scene.add(this.cameraContainer);
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize( _width, _height );
+        this.controllers = [];
         element.appendChild(this.renderer.domElement);
         this.physics = null;
         // console.log(this.cameraContainer);
@@ -26,6 +27,16 @@ export default class Environment3d{
         }
         
     }
+    registerController (controller) {
+        this.controllers.push({ controller, type: controller.getControllerType(), id: controller.controllerID });
+    }
+    unregisterController (controller) {
+        const id = controller.controllerID;
+        const targetController = this.controllers.map((item, index) => {index, item}).filter(item => item.item.id === id)[0];
+        if(targetController){
+            this.controllers.splice(targetController.index, 1);
+        }
+    }
     render(){
         this.renderer.render(this.scene, this.camera);
     }
@@ -36,12 +47,19 @@ export default class Environment3d{
         return object3DSelector(scope, filters);
     }
     createPlane({size, orientation, position, mass, material, rotation}){
-        return createPrimitive({ type: ShapeTypes.PLANE, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
+        const physics = mass !== undefined ? this.physics : null;
+        return createPrimitive({ type: ShapeTypes.PLANE, size, position, orientation, mass, physics, material, rotation, scene: this.scene });
     }
     createBox({size, orientation, position, mass, material, rotation}){
-        return createPrimitive({ type: ShapeTypes.BOX, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
+        const physics = mass !== undefined ? this.physics : null;
+        return createPrimitive({ type: ShapeTypes.BOX, size, position, orientation, mass, physics, material, rotation, scene: this.scene });
     }
     createSphere({size, orientation, position, mass, material, rotation}){
-        return createPrimitive({ type: ShapeTypes.SPHERE, size, position, orientation, mass, physics: this.physics, material, rotation, scene: this.scene })
+        const physics = mass !== undefined ? this.physics : null;
+        return createPrimitive({ type: ShapeTypes.SPHERE, size, position, orientation, mass, physics, material, rotation, scene: this.scene });
+    }
+    createCylinder({size, orientation, position, mass, material, rotation}){
+        const physics = mass !== undefined ? this.physics : null;
+        return createPrimitive({ type: ShapeTypes.CYLINDER, size, position, orientation, mass, physics, material, rotation, scene: this.scene });
     }
 }

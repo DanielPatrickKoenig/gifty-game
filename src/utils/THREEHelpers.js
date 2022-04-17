@@ -65,6 +65,10 @@ function createPrimitive({ type, size, position, orientation, mass, physics, mat
             geometry = new THREE.SphereGeometry( size.r );
             break;
         }
+        case ShapeTypes.CYLINDER:{
+            geometry = new THREE.CylinderGeometry( size.r, size.r, size.h, 32 );
+            break;
+        }
     }
     const mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = shapePosition.x;
@@ -80,4 +84,23 @@ function createPrimitive({ type, size, position, orientation, mass, physics, mat
     }
     return {mesh, body};
 }
-export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive}
+
+function getCollisions(mesh, collidableMeshList){
+    const collisionMatrix = [];
+    for (let vertexIndex = 0; vertexIndex < mesh.geometry.attributes.position.array.length; vertexIndex++)
+    {       
+        const localVertex = new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, vertexIndex).clone();
+        const globalVertex = localVertex.applyMatrix4(mesh.matrix);
+        const directionVector = globalVertex.sub( mesh.position );
+
+        const ray = new THREE.Raycaster( mesh.position, directionVector.clone().normalize() );
+        const collisionResults = ray.intersectObjects( collidableMeshList );
+        if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+        {
+            collisionMatrix.push(collisionResults);
+            // a collision occurred... do something...
+        }
+    }
+    return collisionMatrix;
+}
+export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive, getCollisions}
