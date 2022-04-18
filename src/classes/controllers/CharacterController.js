@@ -66,4 +66,7 @@ export default class CharacterController extends CustomMeshController{
         }
         
     }
+    location(){
+        return this.navigator?.physicsMesh.position;
+    }
 }

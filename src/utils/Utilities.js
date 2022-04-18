@@ -28,4 +28,14 @@ function processPointerEvent(e){
         ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
         : { x: e.clientX, y: e.clientY };
 }
-export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues, processPointerEvent};
+function getInheritanceChain(targetObject){
+    const list = [];
+    let obj = targetObject;
+    while(!obj.constructor || obj.constructor.name !== 'Object'){
+        obj = obj.__proto__;
+        list.push(obj.constructor.name);
+    }
+    console.log(list);
+    return list;
+}
+export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues, processPointerEvent, getInheritanceChain};

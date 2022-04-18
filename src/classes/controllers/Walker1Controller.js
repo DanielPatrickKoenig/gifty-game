@@ -19,4 +19,8 @@ export default class Walker1Controller extends PlayerController{
         this.rigManager.cycle('rightArm', 'y', [{value:-20, time:.5}, {value:20, time:.5}], ['moving']);
         this.rigManager.cycle('rightArm', 'y', [{value:-90, time:.5}], ['carying', 'holding']);
     }
+    move(){
+        super.move();
+        console.log(this.getLocatables());
+    }
 }

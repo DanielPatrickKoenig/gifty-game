@@ -4,6 +4,7 @@ const ControllerTypes = {
     CHARACTER: 2,
     CUSTOM_MESH: 3
 }
+import {getInheritanceChain} from '../../utils/Utilities';
 export default class BaseController{
     constructor({environment}){
         this.environment = environment;
@@ -34,6 +35,9 @@ export default class BaseController{
     }
     update(){
 
+    }
+    getControllersOfType(className, includeSelf){
+        return this.environment.controllers.filter(item => getInheritanceChain(item.controller).includes(className) && (item.controller.controllerID !== this.controllerID || includeSelf));
     }
 }
 export {ControllerTypes};

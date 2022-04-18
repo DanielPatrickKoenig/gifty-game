@@ -39,4 +39,8 @@ export default class PlayerController extends CharacterController{
         this.pov.angleOffset =this.povBase + e.x;
         this.pov.reposition();
     }
+    getLocatables(){
+        return this.getControllersOfType('LocatableController');
+    }
+    
 }
