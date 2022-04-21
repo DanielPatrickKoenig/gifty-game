@@ -17,7 +17,6 @@
 
 <script>
 import Environment3d from '../classes/Environment3d';
-import {degreesToRadians} from '../utils/Utilities.js';
 import PlayerControl from './PlayerControl.vue';
 import {TweenLite} from 'gsap';
 import BatterUpController from '../classes/controllers/BatterUpController';
@@ -26,6 +25,7 @@ import Walker2Controller from '../classes/controllers/Walker2Controller';
 import GroundController from '../classes/controllers/GroundController';
 import {ControllerTypes} from '../classes/controllers/BaseController';
 import LightController, {LightTypes} from '../classes/controllers/LightController';
+import {POVModes} from '../classes/POVManager';
 export default {
     components:{
         PlayerControl
@@ -86,10 +86,7 @@ export default {
         }
     },
     async mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5});
-        this.env.cameraContainer.position.z = 12;
-        this.env.cameraContainer.position.y = 10;
-        this.env.camera.rotation.x = degreesToRadians(-15);
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.SIDE_SCROLL_PERSPECTIVE});
 
         const lightController = new LightController({environment: this.env});
         lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});

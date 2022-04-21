@@ -1,6 +1,6 @@
 import {ControllerTypes} from './BaseController';
 import CharacterController from './CharacterController';
-import ThirdPerson from '../ThirdPerson';
+import POVManager from '../POVManager';
 export default class PlayerController extends CharacterController{
     constructor(data, glbFile, startPosition){
         super(data, glbFile, startPosition);
@@ -18,7 +18,7 @@ export default class PlayerController extends CharacterController{
     }
     modelLoaded(model){
         super.modelLoaded(model);
-        this.pov = new ThirdPerson(model, this.environment.cameraContainer);
+        this.pov = new POVManager(model, this.environment.cameraContainer, this.environment.povMode);
         this.pov.reposition();
     }
     povStart(e){

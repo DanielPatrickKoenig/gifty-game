@@ -3,14 +3,18 @@ import { Object3D } from 'three';
 import {ShapeTypes} from '../utils/Utilities.js';
 import {getRaycastIntersections, object3DSelector, createPrimitive} from '../utils/THREEHelpers.js';
 import Physics from '../classes/Physics.js';
+import { POVModes } from './POVManager.js';
 export default class Environment3d{
-    constructor(element, { width, height, background, gravity }){
+    constructor(element, { width, height, background, gravity, pov }){
         const _width = width ? width : 1000;
         const _height = height ? height :  700;
+        this.element = element;
+        console.log(pov);
+        this.povMode = pov ? pov : POVModes.SIDE_SCROLL_FLAT;
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( background | 0xFFFFFF );
         this.cameraContainer = new Object3D();
-        this.camera = new THREE.PerspectiveCamera( 75, _width / _height, 0.1, 1000 );
+        this.camera = this.createCamera(_width, _height);
         this.cameraContainer.add(this.camera);
         this.scene.add(this.cameraContainer);
         this.renderer = new THREE.WebGLRenderer();
@@ -26,6 +30,27 @@ export default class Environment3d{
             },10);
         }
         
+    }
+    createCamera(width, height) {
+        let camera;
+        switch(this.povMode){
+            case POVModes.THIRD_PERSON:
+            case POVModes.FIRST_PERSON:
+            case POVModes.SIDE_SCROLL_PERSPECTIVE:{
+                camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+                break;
+            }
+            case POVModes.SIDE_SCROLL_FLAT:{
+                camera = new THREE.PerspectiveCamera( 1, width / height, 0.1, 3000 );
+                // const aspect = width / height;
+                // const d = 20;
+                // camera = new THREE.OrthographicCamera( - d * aspect, d * aspect, d, - d, 1, 1000 );
+                // camera.position.set( 20, 20, 20 );
+                break;
+            }
+        }
+        
+        return camera;
     }
     registerController (controller) {
         this.controllers.push({ controller, type: controller.getControllerType(), id: controller.controllerID });
