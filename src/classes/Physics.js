@@ -8,22 +8,31 @@ class Physics{
         this.delta =  null;
         this.shapes = [];
         this.onUpdate = onUpdate;
-        this.scale = scale ? scale : .5;
+        this.scale = scale ? scale : 1;
         this.floors = [];
 
     }
     
     processVec3({ property, values }){
+        // console.log(`processing ${property}`);
+        // console.log(values);
         const prop = property ? property : 'position';
         let sizeScale = 1;
         if(property === 'size'){
             sizeScale = this.scale;
         }
-        return new CANNON.Vec3(
-            values.x ? values.x * sizeScale : defaultDimensionValues()[prop].x * sizeScale,
-            values.y ? values.y * sizeScale : defaultDimensionValues()[prop].y * sizeScale,
-            values.z ? values.z * sizeScale : defaultDimensionValues()[prop].z * sizeScale
-        );
+        return Object.keys(values).includes('r')
+            ? new CANNON.Vec3(
+                values.r ? values.r * sizeScale : defaultDimensionValues()[prop].r * sizeScale,
+                values.y ? values.y * sizeScale : defaultDimensionValues()[prop].y * sizeScale,
+                values.z ? values.z * sizeScale : defaultDimensionValues()[prop].z * sizeScale
+            )
+            : new CANNON.Vec3(
+                values.x ? values.x * sizeScale : defaultDimensionValues()[prop].x * sizeScale,
+                values.y ? values.y * sizeScale : defaultDimensionValues()[prop].y * sizeScale,
+                values.z ? values.z * sizeScale : defaultDimensionValues()[prop].z * sizeScale
+            );
+            
     }
     addShape({ type, mass, size, position, orientation, mesh }){
         let shape;
@@ -38,7 +47,11 @@ class Physics{
                 break;
             }
             case ShapeTypes.SPHERE:{
-                shape = new CANNON.Sphere(sizeVector.r);
+                shape = new CANNON.Sphere(sizeVector.x);
+                break;
+            }
+            case ShapeTypes.CYLINDER:{
+                shape = new CANNON.Cylinder(sizeVector.x, sizeVector.x, sizeVector.y, 32);
                 break;
             }
         }

@@ -8,6 +8,7 @@ export default class BatterUpController extends BaseController{
         const material2 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
         this.bat = this.environment.createSphere({size: {r: 1}, position: { x: -4, y: 12, z: 0 }, mass: 2, material: material1 });
         this.ball = this.environment.createSphere({size: {r: .5}, position: { x: -4, y: 12, z: 16 }, mass: 1, material: material2 });
+        // this.cylinder = this.environment.createCylinder({size: {r: 1, y: 2}, position: {x: 2, y: 8, z: 3}, mass: 1, material2});
     }
     async pitch(){
         this.ball.body.position.y = 5.5;

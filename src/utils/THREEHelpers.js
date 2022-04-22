@@ -66,7 +66,7 @@ function createPrimitive({ type, size, position, orientation, mass, physics, mat
             break;
         }
         case ShapeTypes.CYLINDER:{
-            geometry = new THREE.CylinderGeometry( size.r, size.r, size.h, 32 );
+            geometry = new THREE.CylinderGeometry( size.r, size.r, size.y, 32 );
             break;
         }
     }
