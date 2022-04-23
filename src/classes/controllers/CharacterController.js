@@ -41,6 +41,8 @@ export default class CharacterController extends CustomMeshController{
         switch(this.environment.povMode){
             case POVModes.THIRD_PERSON:
             case POVModes.FIRST_PERSON:
+            case POVModes.ISOMETRIC:
+            case POVModes.ISOPERSPECTIVE:
             {
                 this.rigManager.currentState = 'moving';
                 if(direction < 0){
@@ -63,6 +65,8 @@ export default class CharacterController extends CustomMeshController{
         switch(this.environment.povMode){
             case POVModes.THIRD_PERSON:
             case POVModes.FIRST_PERSON:
+            case POVModes.ISOMETRIC:
+            case POVModes.ISOPERSPECTIVE:
             {
                 if(change<0){
                     this.navigator.turnLeft();

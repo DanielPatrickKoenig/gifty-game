@@ -4,7 +4,9 @@ const POVModes = {
     THIRD_PERSON: 1,
     FIRST_PERSON: 2,
     SIDE_SCROLL_PERSPECTIVE: 3,
-    SIDE_SCROLL_FLAT: 4
+    SIDE_SCROLL_FLAT: 4,
+    ISOMETRIC: 5,
+    ISOPERSPECTIVE: 6
 };
 export default class POVManager{
     constructor(player, camera, mode){
@@ -39,10 +41,28 @@ export default class POVManager{
                 break;
             }
             case POVModes.SIDE_SCROLL_FLAT:{
-                this.distanceToPlayer = 1600;
                 this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, -90, jt.OrbitType.COS);
                 this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, -90, jt.OrbitType.SIN);
                 this.camera.position.y = this.player.position.y;
+                this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
+                break;
+            }
+            case POVModes.ISOMETRIC:{
+                this.camera.rotation.x = degreesToRadians(-20);
+                this.distanceToPlayer = 60;
+                this.camera.rotation.y = degreesToRadians(-20);
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, 180 + 20, jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, 180 + 20, jt.OrbitType.SIN);
+                this.camera.position.y = this.player.position.y + 30;
+                // this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
+                break;
+            }
+            case POVModes.ISOPERSPECTIVE:{
+                this.distanceToPlayer = 100;
+                this.camera.rotation.x = degreesToRadians(20);
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, 0, jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, 0, jt.OrbitType.SIN);
+                this.camera.position.y = this.player.position.y + 50;
                 this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
                 break;
             }

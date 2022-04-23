@@ -36,16 +36,23 @@ export default class Environment3d{
         switch(this.povMode){
             case POVModes.THIRD_PERSON:
             case POVModes.FIRST_PERSON:
-            case POVModes.SIDE_SCROLL_PERSPECTIVE:{
+            case POVModes.SIDE_SCROLL_PERSPECTIVE:
+            case POVModes.ISOPERSPECTIVE:{
                 camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
                 break;
             }
             case POVModes.SIDE_SCROLL_FLAT:{
-                camera = new THREE.PerspectiveCamera( 1, width / height, 0.1, 3000 );
-                // const aspect = width / height;
-                // const d = 20;
-                // camera = new THREE.OrthographicCamera( - d * aspect, d * aspect, d, - d, 1, 1000 );
+                const aspect = width / height;
+                const d = 20;
+                camera = new THREE.OrthographicCamera( - d * aspect, d * aspect, d, - d, 1, 1000 );
                 // camera.position.set( 20, 20, 20 );
+                break;
+            }
+            case POVModes.ISOMETRIC:{
+                const aspect = width / height;
+                const d = 20;
+                camera = new THREE.OrthographicCamera( - d * aspect, d * aspect, d, - d, 0, 1000 );
+                camera.position.set( 0, 0, 0 );
                 break;
             }
         }

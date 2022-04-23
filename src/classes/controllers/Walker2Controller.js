@@ -26,6 +26,8 @@ export default class Walker2Controller extends CharacterController{
             switch(this.environment.povMode){
                 case POVModes.THIRD_PERSON:
                 case POVModes.FIRST_PERSON:
+                case POVModes.ISOMETRIC:
+                case POVModes.ISOPERSPECTIVE:
                 {
                     this.move(-1);
                     break;

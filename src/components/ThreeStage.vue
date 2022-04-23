@@ -87,7 +87,7 @@ export default {
         }
     },
     async mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.THIRD_PERSON});
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.ISOMETRIC});
 
         const lightController = new LightController({environment: this.env});
         lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});
