@@ -46,8 +46,9 @@ export default {
         }
     },
     methods: {
-        onMove(){
-            this.playerControllers.forEach(item => item.move());            
+        onMove(e){
+            console.log(e);
+            this.playerControllers.forEach(item => item.move(e));            
         },
         onDirectionChange(change){
             this.playerControllers.forEach(item => item.directionChange(change));
@@ -86,7 +87,7 @@ export default {
         }
     },
     async mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.SIDE_SCROLL_PERSPECTIVE});
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.THIRD_PERSON});
 
         const lightController = new LightController({environment: this.env});
         lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});

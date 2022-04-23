@@ -3,6 +3,7 @@ import CustomMeshController from './CustomMeshController';
 import RigManager from '../RigManager';
 import ModelLoader from '../ModelLoader';
 import Navigator from '../Navigator';
+import { POVModes } from '../POVManager';
 
 export default class CharacterController extends CustomMeshController{
     constructor(data, glbFile, startPosition){
@@ -36,22 +37,69 @@ export default class CharacterController extends CustomMeshController{
     getControllerType(){
         return [ControllerTypes.CHARACTER];
     }
-    move(){
-        this.rigManager.currentState = 'moving';
-        this.navigator.moveForward();
+    move(direction){
+        switch(this.environment.povMode){
+            case POVModes.THIRD_PERSON:
+            case POVModes.FIRST_PERSON:
+            {
+                this.rigManager.currentState = 'moving';
+                if(direction < 0){
+                    this.navigator.moveForward();
+                }
+                if(direction > 0){
+                    this.navigator.moveBackward();
+                }
+                break;
+            }
+            case POVModes.SIDE_SCROLL_PERSPECTIVE:{
+                this.rigManager.currentState = 'moving';
+                const upOrDown = this.navigator.mover.rotation.y > 0 ? direction > 0 : direction < 0;
+                this.navigator.moveLateral2D(upOrDown);
+                break;
+            }
+        }
     }
     directionChange(change){
-            
-        if(change<0){
-            this.navigator.turnLeft();
+        switch(this.environment.povMode){
+            case POVModes.THIRD_PERSON:
+            case POVModes.FIRST_PERSON:
+            {
+                if(change<0){
+                    this.navigator.turnLeft();
+                }
+                else if(change>0){
+                    this.navigator.turnRight();
+                }
+                else{
+                    this.navigator.stopTurning();
+                }
+                this.navigator.turn(change);
+                break;
+            }
+            case POVModes.SIDE_SCROLL_FLAT:
+            case POVModes.SIDE_SCROLL_PERSPECTIVE:
+            {
+                if(Math.abs(change)){
+                    if(change<0){
+                        this.navigator.turnLeft();
+                        this.navigator.setRotation(180);
+                    }
+                    else if(change>0){
+                        this.navigator.turnRight();
+                        this.navigator.setRotation(0);
+                    }
+                    this.rigManager.currentState = 'moving';
+                    this.navigator.moveForward();
+                }
+                else{
+                    this.navigator.stopTurning();
+                    this.rigManager.currentState = 'idle';
+                    this.navigator.stopMoving();
+                }
+                break;
+            }
         }
-        else if(change>0){
-            this.navigator.turnRight();
-        }
-        else{
-            this.navigator.stopTurning();
-        }
-        this.navigator.turn(change);
+        
     }
     moveStop(){
         this.rigManager.currentState = 'idle';

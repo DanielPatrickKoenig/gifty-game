@@ -61,12 +61,15 @@ export default class Navigator{
     backward2D(){
         this.move2D(1);
     }
-    move2D(direction) {
+    moveLateral2D(left){
+        this.move2D(1, left ? 90 : -90);
+    }
+    move2D(direction, angleOffset = 0) {
         // console.log(this.mover.position.y);
         const startPosX = this.mover.position.x;
         const startPosZ = this.mover.position.z;
-        const xMove = jt.orbit(this.mover.position.x, this.speed * direction, radiansToDegrees(this.mover.rotation.y), jt.OrbitType.COS);
-        const zMove = jt.orbit(this.mover.position.z, this.speed * direction, radiansToDegrees(this.mover.rotation.y), jt.OrbitType.SIN);
+        const xMove = jt.orbit(this.mover.position.x, this.speed * direction, radiansToDegrees(this.mover.rotation.y + angleOffset), jt.OrbitType.COS);
+        const zMove = jt.orbit(this.mover.position.z, this.speed * direction, radiansToDegrees(this.mover.rotation.y + angleOffset), jt.OrbitType.SIN);
         if(this.physics){
             const forceFactor = 20;
             this.physicsBody.velocity.x = (xMove - startPosX) * forceFactor;
@@ -82,6 +85,10 @@ export default class Navigator{
     turn(rotation){
         console.log(rotation);
         this.rotationProxy+=degreesToRadians(this.turnSpeed * rotation);
+    }
+    setRotation(rotation){
+        this.rotationProxy = degreesToRadians(rotation);
+        this.mover.rotation.y = degreesToRadians(rotation);
     }
     jump(){
         if(this.physics && this.physics.onFloor(this.physicsBody)){
