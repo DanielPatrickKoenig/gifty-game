@@ -103,4 +103,7 @@ function getCollisions(mesh, collidableMeshList){
     }
     return collisionMatrix;
 }
-export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive, getCollisions}
+function getDistance(a, b){
+    return  new THREE.Vector3(a.x, a.y, a.z).distanceTo(new THREE.Vector3(b.x, b.y, b.z));
+}
+export {setRotation, RotationAxis, getRaycastIntersections, object3DSelector, createPrimitive, getCollisions, getDistance}

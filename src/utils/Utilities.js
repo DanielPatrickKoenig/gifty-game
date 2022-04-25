@@ -38,4 +38,7 @@ function getInheritanceChain(targetObject){
     console.log(list);
     return list;
 }
-export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues, processPointerEvent, getInheritanceChain};
+function generateID(){
+    return `${Math.random().toString().split('.').join('')}-${Math.random().toString().split('.').join('')}-${Math.random().toString().split('.').join('')}`;
+}
+export {nextTick, degreesToRadians, radiansToDegrees, ShapeTypes, defaultDimensionValues, processPointerEvent, generateID, getInheritanceChain};

@@ -4,7 +4,7 @@ const ControllerTypes = {
     CHARACTER: 2,
     CUSTOM_MESH: 3
 }
-import {getInheritanceChain} from '../../utils/Utilities';
+import {getInheritanceChain, generateID} from '../../utils/Utilities';
 export default class BaseController{
     constructor({environment}){
         this.environment = environment;
@@ -13,7 +13,7 @@ export default class BaseController{
         this.renderer = this.environment.renderer;
         this.physics = this.environment.physics;
         this.items = {};
-        this.controllerID = `${Math.random().toString().split('.').join('')}-${Math.random().toString().split('.').join('')}-${Math.random().toString().split('.').join('')}`;
+        this.controllerID = `controller-${generateID()}`;
         this.register();
         this.init();
     }

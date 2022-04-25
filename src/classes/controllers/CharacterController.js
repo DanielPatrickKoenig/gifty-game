@@ -119,6 +119,6 @@ export default class CharacterController extends CustomMeshController{
         
     }
     location(){
-        return this.navigator?.physicsMesh.position;
+        return this.navigator && this.navigator.physicsMesh ? this.navigator.physicsMesh.position : this.startPosition;
     }
 }

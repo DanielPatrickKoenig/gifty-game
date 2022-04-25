@@ -12,6 +12,10 @@
             @space="onSpace"
         />
         <button style="position:relative;" @click="pitch">pitch</button>
+        <JunctionTester 
+            v-if="ready"
+            :jc="junction" 
+        />
     </div>
 </template>
 
@@ -25,16 +29,22 @@ import Walker2Controller from '../classes/controllers/Walker2Controller';
 import GroundController from '../classes/controllers/GroundController';
 import {ControllerTypes} from '../classes/controllers/BaseController';
 import LightController, {LightTypes} from '../classes/controllers/LightController';
+import JunctionController from '../classes/controllers/JunctionController';
 import {POVModes} from '../classes/POVManager';
+
+import JunctionTester from './JunctionTester.vue';
 export default {
     components:{
-        PlayerControl
+        PlayerControl,
+        JunctionTester
     },
     data () {
         return {
             env: null,
             batterUp: null,
-            walker: null
+            walker: null,
+            junction: null,
+            ready: false
         };
     },
     computed: {
@@ -78,6 +88,7 @@ export default {
                 onUpdate:() => {
                     this.env.render();
                     this.controllers.forEach(item => item.update());
+                    // console.log(this.junction.getDistance(this.walker.location()));
                 },
                 onComplete: this.renderLoop
             });
@@ -86,7 +97,7 @@ export default {
             this.batterUp.pitch();
         }
     },
-    async mounted(){
+    mounted(){
         this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.ISOMETRIC});
 
         const lightController = new LightController({environment: this.env});
@@ -99,7 +110,15 @@ export default {
         this.walker = new Walker1Controller({environment: this.env});
 
         this.walker2 = new Walker2Controller({environment: this.env});
-        
+
+        this.junction = new JunctionController({environment: this.env}, {x: -12, y: 0, z: 16}, this.walker2);
+        this.junction.addPath([{x: 9, y: 0, z: 5}, {x: 12, y: 0, z: 8}, {x: 14, y: 0, z: 8}, {x: 14, y: 0, z: 12}, {x: 19, y: 0, z: 12}]);
+        this.junction.addPath([{x: 14, y: 0, z: 6}, {x: 14, y: 0, z: 8}, {x: 12, y: 0, z: 8}, {x: 7, y: 0, z: 19}, {x: 12, y: 0, z: 19}, {x: 16, y: 0, z: 17}]);
+        this.junction.addPath([{x: 12, y: 0, z: 16}, {x: 12, y: 0, z: 19}, {x: 10, y: 0, z: 26}]);
+        // this.junction.pathToPoint({x: 7, y: 0, z: 19});
+       
+       this.ready = true;
+
         this.renderLoop();
         
 
