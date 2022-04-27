@@ -1,5 +1,5 @@
 import BaseController, {ControllerTypes} from './BaseController';
-import { getDistance } from '../../utils/THREEHelpers';
+import jt from 'jstrig';
 export default class LocatableController extends BaseController{
     constructor(data, startPosition){
         super(data);
@@ -14,7 +14,8 @@ export default class LocatableController extends BaseController{
     getMinimumDistance(){
         return 1;
     }
-    getDistance({x, y, z}){
-        return getDistance(this.location, {x, y, z});
+    insideThreshold (lc) {
+        const distance = jt.distance({x: this.location().x, y: this.location().z}, {x: lc.location().x, y: lc.location().z});
+        return distance < this.getMinimumDistance();
     }
 }

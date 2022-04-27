@@ -1,3 +1,7 @@
+/*
+this class is unfinished and is intended to connect a start path to a destination path
+*/
+
 import jt from 'jstrig';
 import LocatableController from "./LocatableController";
 import {generateID} from '../../utils/Utilities';
@@ -79,13 +83,29 @@ export default class JunctionController extends LocatableController{
         return aSerialized.filter(item => bSerialized.includes(item)).length;
     }
 
-    getSharedPaths(path, allPaths){
-        console.log(allPaths);
-        console.log(path);
+    getSharedPaths(path, allPaths, _exclusions){
+        const exclusions = _exclusions ? _exclusions : [];
         return Object.keys(allPaths)
-            .filter(item => item !== path[0].id && this.hasCommonPoint(path, allPaths[item]))
+            .filter(item => !exclusions.includes(item) && item !== path[0].id && this.hasCommonPoint(path, allPaths[item]))
             .map(item => allPaths[item]);
     }
+
+    // getRequiredPaths(currentPath, destinationPath, allPaths, _collection){
+    //     const collection = _collection ? _collection : [];
+    //     collection.push(currentPath);
+    //     if(currentPath[0].id === destinationPath[0].id){
+    //         return collection;
+    //     }
+    //     else{
+    //         const connectedToCurrent = this.getSharedPaths(currentPath, allPaths, Object.keys(collection));
+    //         if(connectedToCurrent.length){
+    //             connectedToCurrent.forEach(item => this.getRequiredPaths(item, destinationPath, allPaths, collection))
+                
+    //         }
+    //     }
+        
+    //     // return this.hasCommonPoint(startPath, destinationPath);
+    // }
 
     leadsToDestinationPath(startPath, destinationPath, sharedPaths, allPaths, _collected, _used){
         const used = _used ? _used : [startPath, destinationPath];

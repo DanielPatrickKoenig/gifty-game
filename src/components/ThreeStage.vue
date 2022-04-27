@@ -12,10 +12,13 @@
             @space="onSpace"
         />
         <button style="position:relative;" @click="pitch">pitch</button>
-        <JunctionTester 
-            v-if="ready"
-            :jc="junction" 
-        />
+        <button 
+            style="position:relative;"
+            v-if="atCheckpoint"
+            @click="completeCheckpoint"
+        >
+            Continue
+        </button>
     </div>
 </template>
 
@@ -29,14 +32,14 @@ import Walker2Controller from '../classes/controllers/Walker2Controller';
 import GroundController from '../classes/controllers/GroundController';
 import {ControllerTypes} from '../classes/controllers/BaseController';
 import LightController, {LightTypes} from '../classes/controllers/LightController';
-import JunctionController from '../classes/controllers/JunctionController';
+import AutoNavigationController from '../classes/controllers/AutoNavigationController';
+import CheckpointController from '../classes/controllers/CheckpointController';
 import {POVModes} from '../classes/POVManager';
 
-import JunctionTester from './JunctionTester.vue';
+
 export default {
     components:{
-        PlayerControl,
-        JunctionTester
+        PlayerControl
     },
     data () {
         return {
@@ -44,6 +47,8 @@ export default {
             batterUp: null,
             walker: null,
             junction: null,
+            checkpoints: [],
+            atCheckpoint: false,
             ready: false
         };
     },
@@ -95,10 +100,19 @@ export default {
         },
         pitch(){
             this.batterUp.pitch();
+        },
+        onCheckpoint(index){
+            console.log(index);
+            this.junction.paused = true;
+            this.atCheckpoint = true;
+        },
+        completeCheckpoint(){
+            this.junction.paused = false;
+            this.atCheckpoint = false;
         }
     },
     mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.ISOMETRIC});
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.ISOPERSPECTIVE});
 
         const lightController = new LightController({environment: this.env});
         lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});
@@ -111,11 +125,17 @@ export default {
 
         this.walker2 = new Walker2Controller({environment: this.env});
 
-        this.junction = new JunctionController({environment: this.env}, {x: -12, y: 0, z: 16}, this.walker2);
-        this.junction.addPath([{x: 9, y: 0, z: 5}, {x: 12, y: 0, z: 8}, {x: 14, y: 0, z: 8}, {x: 14, y: 0, z: 12}, {x: 19, y: 0, z: 12}]);
-        this.junction.addPath([{x: 14, y: 0, z: 6}, {x: 14, y: 0, z: 8}, {x: 12, y: 0, z: 8}, {x: 7, y: 0, z: 19}, {x: 12, y: 0, z: 19}, {x: 16, y: 0, z: 17}]);
-        this.junction.addPath([{x: 12, y: 0, z: 16}, {x: 12, y: 0, z: 19}, {x: 10, y: 0, z: 26}]);
+        this.junction = new AutoNavigationController({environment: this.env}, [{x: 9, y: 0, z: 5}, {x: 9, y: 0, z: 8}, {x: 12, y: 0, z: 8}, {x: 14, y: 0, z: 8}, {x: 14, y: 0, z: 12}, {x: 19, y: 0, z: 12}], this.walker);
+        // this.junction.addPath([{x: 9, y: 0, z: 5}, {x: 9, y: 0, z: 8}, {x: 12, y: 0, z: 8}, {x: 14, y: 0, z: 8}, {x: 14, y: 0, z: 12}, {x: 19, y: 0, z: 12}]);
+        // this.junction.addPath([{x: 4, y: 0, z: 21}, {x: 9, y: 0, z: 8}, {x: 12, y: 0, z: 5}]);
+        // this.junction.addPath([{x: 14, y: 0, z: 6}, {x: 14, y: 0, z: 8}, {x: 12, y: 0, z: 8}, {x: 7, y: 0, z: 19}, {x: 12, y: 0, z: 19}, {x: 16, y: 0, z: 17}, {x: 19, y: 0, z: 17}]);
+        // this.junction.addPath([{x: 12, y: 0, z: 16}, {x: 12, y: 0, z: 19}, {x: 10, y: 0, z: 26}]);
+        // this.junction.addPath([{x: 15, y: 0, z: 14}, {x: 16, y: 0, z: 17}, {x: 17, y: 0, z: 26}, {x: 24, y: 0, z: 26}]);
+        // this.junction.addPath([{x: 27, y: 0, z: 20}, {x: 17, y: 0, z: 26}, {x: 21, y: 0, z: 31}]);
         // this.junction.pathToPoint({x: 7, y: 0, z: 19});
+
+        this.checkpoints.push(new CheckpointController({environment: this.env}, {x: 12, y: 0, z: 8}, this.walker, () => this.onCheckpoint(0) ));
+        this.checkpoints.push(new CheckpointController({environment: this.env}, {x: 14, y: 0, z: 12}, this.walker, () => this.onCheckpoint(1) ));
        
        this.ready = true;
 

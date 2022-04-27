@@ -39,7 +39,8 @@ export default {
             });
         },
         calculatedPath(){
-            return this.jc.pathToPoint({x: 10, y: 0, z: 26});
+            return this.jc.pathToPoint({x: 21, y: 0, z: 31});
+            // return this.jc.pathToPoint({x: 19, y: 0, z: 12});
         }
     }
 }

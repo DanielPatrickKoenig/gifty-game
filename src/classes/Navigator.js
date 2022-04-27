@@ -86,9 +86,12 @@ export default class Navigator{
         console.log(rotation);
         this.rotationProxy+=degreesToRadians(this.turnSpeed * rotation);
     }
-    setRotation(rotation){
+    setRotation(rotation, ease){
         this.rotationProxy = degreesToRadians(rotation);
-        this.mover.rotation.y = degreesToRadians(rotation);
+        if(!ease){
+            this.mover.rotation.y = degreesToRadians(rotation);
+        }
+        
     }
     jump(){
         if(this.physics && this.physics.onFloor(this.physicsBody)){

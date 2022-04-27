@@ -58,11 +58,10 @@ export default class POVManager{
                 break;
             }
             case POVModes.ISOPERSPECTIVE:{
-                this.distanceToPlayer = 100;
-                this.camera.rotation.x = degreesToRadians(20);
-                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, 0, jt.OrbitType.COS);
-                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, 0, jt.OrbitType.SIN);
-                this.camera.position.y = this.player.position.y + 50;
+                this.distanceToPlayer = 30;
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, this.angleOffset, jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, this.angleOffset, jt.OrbitType.SIN);
+                this.camera.position.y = this.player.position.y + 12;
                 this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
                 break;
             }
