@@ -22,7 +22,7 @@ export default class PlayerController extends CharacterController{
         this.pov.reposition();
     }
     povStart(e){
-        this.povBase = this.pov.angleOffset;
+        this.povBase = this.pov.getAngleOffset();
         if(e.mobile){
             this.rigManager.currentState = 'moving';
             this.navigator.mobileMoving = true;
@@ -36,7 +36,8 @@ export default class PlayerController extends CharacterController{
         }
     }
     povChange(e){
-        this.pov.angleOffset =this.povBase + e.x;
+        this.pov.setAngleOffset(this.povBase + e.x);
+        // this.pov.angleOffset =this.povBase + e.x;
         this.pov.reposition();
     }
     getLocatables(){

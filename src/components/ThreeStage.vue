@@ -19,6 +19,10 @@
         >
             Continue
         </button>
+        <div style="position:relative;">
+            <label>ISOPERSPECTIVE <input @change="onPOVSwitch" v-model="pov" :value="POVModes.ISOPERSPECTIVE" type="radio" /></label>
+            <label>THIRD PERSON <input @change="onPOVSwitch" v-model="pov" type="radio" :value="POVModes.THIRD_PERSON" /></label>
+        </div>
     </div>
 </template>
 
@@ -49,7 +53,9 @@ export default {
             junction: null,
             checkpoints: [],
             atCheckpoint: false,
-            ready: false
+            ready: false,
+            POVModes,
+            pov: POVModes.ISOPERSPECTIVE
         };
     },
     computed: {
@@ -109,10 +115,17 @@ export default {
         completeCheckpoint(){
             this.junction.paused = false;
             this.atCheckpoint = false;
+        },
+        onPOVSwitch(){
+            console.log('POV SWITCH');
+            console.log(this.pov);
+            this.env.povMode = this.pov;
+            this.walker.pov.mode = this.pov;
+            this.junction.povChange();
         }
     },
     mounted(){
-        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: POVModes.ISOPERSPECTIVE});
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: this.pov});
 
         const lightController = new LightController({environment: this.env});
         lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});

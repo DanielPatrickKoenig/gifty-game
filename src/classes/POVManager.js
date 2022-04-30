@@ -12,23 +12,30 @@ export default class POVManager{
     constructor(player, camera, mode){
         this.player = player;
         this.camera = camera;
-        this.angleOffset = 0;
+        this.angleOffset = {};
+        Object.keys(POVModes).forEach(item => this.angleOffset[POVModes[item]] = 0);
         this.distanceToPlayer = 12;
         this.mode = mode ? mode : POVModes.THIRD_PERSON;
+    }
+    getAngleOffset(){
+        return this.angleOffset[this.mode];
+    }
+    setAngleOffset(offset){
+        this.angleOffset[this.mode] = offset;
     }
     reposition(){
         switch(this.mode){
             case POVModes.THIRD_PERSON:{
-                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.COS);
-                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.SIN);
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.getAngleOffset(), jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.getAngleOffset(), jt.OrbitType.SIN);
                 this.camera.position.y = this.player.position.y + 6;
                 this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
                 break;
             }
             case POVModes.FIRST_PERSON:{
                 this.distanceToPlayer = -2;
-                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.COS);
-                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y) + this.angleOffset, jt.OrbitType.SIN);
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y), jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, radiansToDegrees(this.player.rotation.y), jt.OrbitType.SIN);
                 this.camera.position.y = this.player.position.y + 4;
                 this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z}) + 180) * -1;
                 break;
@@ -59,8 +66,8 @@ export default class POVManager{
             }
             case POVModes.ISOPERSPECTIVE:{
                 this.distanceToPlayer = 30;
-                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, this.angleOffset, jt.OrbitType.COS);
-                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, this.angleOffset, jt.OrbitType.SIN);
+                this.camera.position.x = jt.orbit(this.player.position.x, this.distanceToPlayer, this.getAngleOffset(), jt.OrbitType.COS);
+                this.camera.position.z = jt.orbit(this.player.position.z, this.distanceToPlayer, this.getAngleOffset(), jt.OrbitType.SIN);
                 this.camera.position.y = this.player.position.y + 12;
                 this.camera.rotation.y = degreesToRadians(jt.angle({x: this.camera.position.x, y: this.camera.position.z}, {x: this.player.position.x, y: this.player.position.z})) * -1;
                 break;
