@@ -32,16 +32,20 @@ export default class Navigator{
             rotation: MovementDirectives.NOT_ROTATING
         };
         if(this.physics){
-            const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+            const material = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true} );
+            material.opacity = 0;
             const { mesh, body } = this.env.createSphere({size: {r: 1}, position, mass: 1, material });
             this.physicsMesh = mesh;
             this.physicsBody = body;
-            this.currentPosition = {x: this.physicsBody.position.x, y: this.physicsBody.position.y, z: this.physicsBody.position.z};
+            this.currentPosition = {x: this.physicsBody.position.x, y: this.physicsBody.position.y + this.getYShift(), z: this.physicsBody.position.z};
             this.physicsBody.addEventListener("collide",function(e){
                 console.log(e);
             });
         }
         this.thread(this);
+    }
+    getYShift(){
+        return -1;
     }
     thread(scope){
         const p = { n: 0 };
@@ -74,7 +78,7 @@ export default class Navigator{
             const forceFactor = 20;
             this.physicsBody.velocity.x = (xMove - startPosX) * forceFactor;
             this.physicsBody.velocity.z = (zMove - startPosZ) * forceFactor;
-            this.currentPosition = {x: this.physicsBody.position.x, y: this.physicsBody.position.y, z: this.physicsBody.position.z};
+            this.currentPosition = {x: this.physicsBody.position.x, y: this.physicsBody.position.y + this.getYShift(), z: this.physicsBody.position.z};
         }
         else{
             this.mover.position.x = xMove;
@@ -158,10 +162,10 @@ export default class Navigator{
         }
         if(this.physics){
             this.mover.position.x = this.physicsBody.position.x;
-            this.mover.position.y = this.physicsBody.position.y;
+            this.mover.position.y = this.physicsBody.position.y + this.getYShift();
             this.mover.position.z = this.physicsBody.position.z;
             this.currentPosition.x = this.physicsBody.position.x;
-            this.currentPosition.y = this.physicsBody.position.y;
+            this.currentPosition.y = this.physicsBody.position.y + this.getYShift();
             this.currentPosition.z = this.physicsBody.position.z;
         }
     }
