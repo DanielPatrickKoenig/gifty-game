@@ -128,7 +128,8 @@ export default {
         this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700, gravity: -5, pov: this.pov});
 
         const lightController = new LightController({environment: this.env});
-        lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 5});
+        lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: 1.5, target: {x: 20, y: 0, z: 15}});
+        lightController.addLight({type: LightTypes.DIRECTIONAL, color: 0xffffff, intensity: .5, target: {x: -5, y: 0, z: -22}});
         
         new GroundController({environment: this.env}, 'https://danielpatrickkoenig.github.io/spirit-of-kovak/dist/dirt_row.png');
 

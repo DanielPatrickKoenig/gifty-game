@@ -9,7 +9,7 @@ export default class LightController extends BaseController{
     constructor(data){
         super(data);
     }
-    addLight({type, color, intensity, distance, decay}){
+    addLight({type, color, intensity, distance, decay, target}){
         let light = null;
         switch(type){
             case LightTypes.DIRECTIONAL:{
@@ -28,7 +28,19 @@ export default class LightController extends BaseController{
         if(light){
             this.scene.add(light);
         }
+        if(target){
+            light.target = this.createTarget(target);
+        }
         return light;
+    }
+    createTarget({x, y, z}){
+        const target = new THREE.Object3D();
+        target.position.x = x;
+        target.position.y = y;
+        target.position.z = z;
+        this.scene.add(target);
+        return target;
+
     }
 }
 export {LightTypes};

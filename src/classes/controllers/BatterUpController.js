@@ -4,8 +4,8 @@ import BaseController from './BaseController';
 export default class BatterUpController extends BaseController{
     constructor(data){
         super(data);
-        const material1 = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
-        const material2 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+        const material1 = new THREE.MeshLambertMaterial( {color: 0x0000ff, reflectivity: 0} );
+        const material2 = new THREE.MeshLambertMaterial( {color: 0xff0000, reflectivity: 0} );
         this.bat = this.environment.createSphere({size: {r: 1}, position: { x: -4, y: 12, z: 0 }, mass: 2, material: material1 });
         this.ball = this.environment.createSphere({size: {r: .5}, position: { x: -4, y: 12, z: 16 }, mass: 1, material: material2 });
         // this.cylinder = this.environment.createCylinder({size: {r: 1, y: 2}, position: {x: -12, y: 4, z: 16}, mass: 1, material: material2});
